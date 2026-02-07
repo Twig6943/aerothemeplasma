@@ -48,7 +48,7 @@ groups=(plasma)
 provides=(libplasma)
 source=(https://download.kde.org/stable/plasma/$_dirver/libplasma-$pkgver.tar.xz{,.sig}
         https://gitgud.io/wackyideas/aerothemeplasma/-/raw/master/misc/libplasma/src/declarativeimports/core/private/DefaultToolTip.qml)
-sha256sums=('66eda145fb57dcc585db97fd7e543f2cdfc745ceb83c16cbe3d080939f5b1b14'
+sha256sums=('SKIP'
             'SKIP'
             'SKIP')
 validpgpkeys=('E0A3EB202F8E57528E13E72FD7574483BB57B18D'  # Jonathan Esk-Riddell <jr@jriddell.org>
