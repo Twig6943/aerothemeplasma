@@ -31,7 +31,15 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          echo 123
+          cd pkg
+          cd libplasma-aerothemeplasma
+          makepkg -s
+          cd ..
+          cd plasma6-aerothemeplasma-git
+          makepkg -s
+          cd ..
+          cd plasma6-aerothemeplasma-smod-git
+          makepkg -s
           EOF
 
       - name: Upload artifact/s
@@ -39,4 +47,4 @@ jobs:
         with:
           name: DLL
           path: |
-            pkg/git/*.pkg.tar.zst
+            aur/*.pkg.tar.zst

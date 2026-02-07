@@ -25,3 +25,12 @@ kwin/effects_cpp/startupfeedback/build-wl
 kwin/effects_cpp/minimize3d/build-wl
 kwin/effects_cpp/minimize3d
 experimental/
+
+aur/plasma6-aerothemeplasma-git/src/
+aur/plasma6-aerothemeplasma-git/pkg/
+aur/plasma6-aerothemeplasma-git/libplasma-aerothemeplasma/
+aur/plasma6-aerothemeplasma-git/*.pkg.tar.*
+aur/libplasma-aerothemeplasma/src/
+aur/libplasma-aerothemeplasma/pkg/
+aur/libplasma-aerothemeplasma/plamsa6-theme-aerothemeplasma-git
+aur/libplasma-aerothemeplasma/*.pkg.tar.*

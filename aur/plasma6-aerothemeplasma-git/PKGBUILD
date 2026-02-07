@@ -1,0 +1,135 @@
+#set -x
+# Maintainer: Chloe Fontenot <foley2431@gmail.com>
+pkgname=plamsa6-theme-aerothemeplasma-git
+pkgver=r212.099ee1f
+pkgrel=1
+pkgdesc="This is a project which aims to recreate the look and feel of Windows 7 as much as possible on KDE Plasma, whilst adapting the design to fit in with modern features provided by KDE Plasma and Linux."
+arch=("any")
+url="https://gitgud.io/wackyideas/aerothemeplasma"
+license=('AGPL')
+groups=()
+depends=(kvantum qt6-virtualkeyboard qt6-multimedia qt6-5compat plasma-wayland-protocols plasma5support libplasma ttf-segoe-ui-variable qt6-quick3d kwin)
+makedepends=(cmake extra-cmake-modules ninja plasma6-aerothemeplasma-smod-git)
+provides=("plamsa6-theme-aerothemeplasma")
+conflicts=("plamsa6-aerothemeplasma")
+options=()
+source=("$pkgname::git+https://gitgud.io/wackyideas/aerothemeplasma.git")
+noextract=()
+md5sums=('SKIP') #generate with 'makepkg -g'
+
+pkgver() {
+  cd "$srcdir/$pkgname"
+  
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "$srcdir/$pkgname/plasma/plasmoids/src"
+	msg2 "Building Plasmoids..."
+	
+	msg2 "Building seventasks plasmoid..."
+	cd "seventasks_src"
+	mkdir build
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+	ninja
+	cd ../..
+	
+	msg2 "Building sevenstart plasmoid..."
+	cd "sevenstart_src"
+	mkdir build
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+	ninja
+	cd ../..
+
+	cd $srcdir/$pkgname/kwin/effects_cpp
+	for i in *; do
+		msg2 "Building $i..."
+		cd $i
+		mkdir build
+		cd build
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_KF6=ON ..
+		#-DCMAKE_PREFIX_PATH=$(echo $(eval $srcdir/$pkgname/kwin/decoration/breeze-*/build/kdecoration)):$CMAKE_PREFIX_PATH
+		ninja
+		cd ../..
+	done
+	cd ../..
+}
+
+package() {
+	msg2 "Copying SMOD resources..."
+	mkdir -vp $pkgdir/usr/share
+	cd "$srcdir/$pkgname/plasma"
+	cp -rv smod $pkgdir/usr/share/
+
+	msg2 "Copying plasmoids..."
+	cd "$srcdir/$pkgname/plasma/plasmoids/src/"
+	cd "seventasks_src/build"
+	DESTDIR=$pkgdir ninja install
+	cd "../../sevenstart_src/build"
+	DESTDIR=$pkgdir ninja install
+	cd "../../"
+
+	cd "$srcdir/$pkgname/kwin/effects_cpp"
+	for i in *; do
+		msg2 "Installing $i..."
+		cd $i/build
+		DESTDIR=$pkgdir ninja install
+		cd "../.."
+	done
+
+	# Prevent conflicts with plasma components...
+	#rm -rfv $pkgdir/usr/share/kwin $pkgdir/usr/share/plasma/shells/org.kde.plasma.desktop
+
+	msg2 "Making directories in $pkgdir..."
+	mkdir -vp "$pkgdir/usr/share/plasma"
+	mkdir -vp "$pkgdir/usr/share/sddm/themes"
+	mkdir -vp "$pkgdir/etc/systemd/system"
+	mkdir -vp "$pkgdir/usr/share/kwin"
+	mkdir -vp "$pkgdir/usr/share/Kvantum"
+	mkdir -vp "$pkgdir/usr/share/sounds"
+	mkdir -vp "$pkgdir/usr/share/icons"
+	mkdir -vp "$pkgdir/usr/share/mime/packages"
+
+	msg2 "### Copying Plasma components... ###"
+	cd "$srcdir/$pkgname/plasma"
+	cp -rv smod "$pkgdir/usr/share/"
+	cp -rv color_schemes desktoptheme look-and-feel plasmoids layout-tempaltes shells "$pkgdir/usr/share/plasma/" || true # this returns error 1 for some reason?
+	
+	msg2 "Copying sddm theme..."
+	cd "$srcdir/$pkgname/plasma/sddm"
+
+	cp -rv "sddm-theme-mod" "$pkgdir/usr/share/sddm/themes"
+	cd "sddm-theme-mod/Services/"
+	cp -vf smod-stcw-before.service smod-stcw-after.service "$pkgdir/etc/systemd/system/"
+	
+	msg2 "Copying kwin components..."
+	cd "$srcdir/$pkgname/kwin"
+
+	cp -rv effects tabbox outline scripts "$pkgdir/usr/share/kwin/"
+	
+	msg2 "### Copying miscellanious components... ###"
+	cd "$srcdir/$pkgname/misc/"
+
+	msg2 "Copying Kvantum theme..."
+	# Don't copy the theme config, bad idea to override defaults...
+	cp -rv "kvantum/Kvantum/Windows7Kvantum_Aero" "$pkgdir/usr/share/Kvantum/"
+
+	msg2 "Copying sounds..."
+	tar xvf "sounds/sounds.tar.gz" -C "$pkgdir/usr/share/sounds/"
+
+	msg2 "Copying icons..."
+	tar xvf "icons/Windows 7 Aero.tar.gz" -C "$pkgdir/usr/share/icons/"
+
+	msg2 "Copying cursors..."
+	tar xvf "cursors/aero-drop.tar.gz" -C "$pkgdir/usr/share/icons/"
+
+	msg2 "Copying mimetype xmls..."
+	cp -rv "mimetype/" "$pkgdir/usr/share/mime/packages/"
+}
+
+post_install() {
+	msg2 "Updating mimetype database..."
+	update-mime-database
+}

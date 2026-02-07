@@ -1,0 +1,38 @@
+# Maintainer: Chloe Fontenot <foley2431@gmail.com>
+pkgname=plasma6-aerothemeplasma-smod-git
+pkgver=r212.099ee1f
+pkgrel=1
+pkgdesc="SMOD stuff for AeroThemePlasma"
+arch=(any)
+url="https://gitgud.io/wackyideas/aerothemeplasma"
+license=('AGPL')
+groups=()
+depends=(kvantum qt6-virtualkeyboard qt6-multimedia qt6-5compat plasma-wayland-protocols plasma5support libplasma ttf-segoe-ui-variable qt6-quick3d kwin)
+makedepends=(cmake extra-cmake-modules ninja)
+provides=(plasma6-aerothemeplasma-smod)
+conflicts=(plasma6-aerothemeplasma-smod)
+options=()
+source=("$pkgname::git+https://gitgud.io/wackyideas/aerothemeplasma.git")
+md5sums=('SKIP') #generate with 'makepkg -g'
+
+pkgver() {
+  cd "$srcdir/$pkgname"
+
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	msg2 "Building kwin decorations and effects.."
+	cd "$srcdir/$pkgname/kwin"
+	cd "decoration/"
+	mkdir build
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+	ninja
+}
+
+package() {
+	cd "$srcdir/$pkgname/kwin"
+	cd decoration/build
+	DESTDIR=$pkgdir ninja install
+}
