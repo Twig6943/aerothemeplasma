@@ -32,14 +32,14 @@ jobs:
           sudo -u builder sh <<'EOF'
           set -e
           cd aur
-          cd libplasma-aerothemeplasma
-          makepkg -s --skipinteg --skipchecksums --skippgpcheck --noprepare
-          cd ..
+          #cd libplasma-aerothemeplasma
+          #makepkg -s --skipinteg --skipchecksums --skippgpcheck
+          #cd ..
           cd plasma6-aerothemeplasma-git
-          makepkg -s
+          makepkg -s --skipinteg --skipchecksums --skippgpcheck
           cd ..
           cd plasma6-aerothemeplasma-smod-git
-          makepkg -s
+          makepkg -s --skipinteg --skipchecksums --skippgpcheck
           EOF
 
       - name: Upload artifact/s
