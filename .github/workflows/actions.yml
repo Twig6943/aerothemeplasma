@@ -27,19 +27,17 @@ jobs:
       - name: Fix permissions
         run: chown -R builder:builder .
 
-        # Gotta install yay because of ttf-segoe-ui-variable not being in arch repos
+        # Gotta install this like this because its not in arch repos
       - name: yay
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          git clone https://aur.archlinux.org/yay-bin.git
-          cd yay-bin
+          git clone https://aur.archlinux.org/ttf-segoe-ui-variable.git
+          cd ttf-segoe-ui-variable
           makepkg -s
           EOF
-          cd yay-bin
+          cd ttf-segoe-ui-variable
           pacman -U *.pkg.tar.zst --noconfirm
-          yay -S ttf-segoe-ui-variable --noconfirm
-          
 
       - name: Build
         run: |
