@@ -31,7 +31,7 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          cd pkg
+          cd aur
           cd libplasma-aerothemeplasma
           makepkg -s
           cd ..
