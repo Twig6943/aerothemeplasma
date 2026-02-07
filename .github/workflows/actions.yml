@@ -29,11 +29,23 @@ jobs:
       - name: Fix permissions
         run: chown -R builder:builder .
 
+      - name: yay
+        run: |
+          sudo -u builder sh <<'EOF'
+          set -e
+          git clone https://aur.archlinux.org/yay-bin.git
+          cd yay-bin
+          makepkg -s
+          EOF
+          cd yay-bin
+          pacman -U *.pkg.tar.zst --noconfirm
+          yay --version
+          
+
       - name: Build
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          
           git clone https://aur.archlinux.org/yay-bin.git
           cd yay-bin
           makepkg -s
