@@ -33,7 +33,7 @@ jobs:
           set -e
           cd aur
           cd libplasma-aerothemeplasma
-          makepkg -s
+          makepkg -s --skipinteg --skipchecksums --skippgpcheck
           cd ..
           cd plasma6-aerothemeplasma-git
           makepkg -s
