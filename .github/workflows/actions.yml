@@ -28,7 +28,7 @@ jobs:
         run: chown -R builder:builder .
 
         # Gotta install this like this because its not in arch repos
-      - name: yay
+      - name: dependencies not available on arch repos
         run: |
           sudo -u builder sh <<'EOF'
           set -e
