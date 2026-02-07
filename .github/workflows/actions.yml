@@ -53,7 +53,7 @@ jobs:
           makepkg -s --skipinteg --skipchecksums --skippgpcheck
           EOF
           cd aur/plasma6-aerothemeplasma-smod-git
-          pacman -U *.pkg.tar.zst --noconfirm
+          pacman -U *.pkg.tar.zst --noconfirm --ask=4
           sudo -u builder sh <<'EOF'
           cd aur
           cd plasma6-aerothemeplasma-git
