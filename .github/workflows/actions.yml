@@ -14,7 +14,7 @@ jobs:
       - name: Install base dependencies
         run: |
           pacman -Syu --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel git cmake extra-cmake-modules ninja curl unzip doxygen kdoctools qt6-doc qt6-tools qt6-virtualkeyboard qt6-multimedia qt6-5compat qt6-wayland qt6-quick3d plasma-wayland-protocols plasma5support kvantum sddm sddm-kcm ksvg plasma-activities libplasma kwin
+          pacman -Syu --noconfirm base-devel git cmake extra-cmake-modules ninja curl unzip doxygen kdoctools qt6-doc qt6-tools qt6-virtualkeyboard qt6-multimedia qt6-5compat qt6-wayland qt6-quick3d plasma-wayland-protocols plasma5support kvantum sddm sddm-kcm ksvg plasma-activities libplasma kwin kwin-x11
 
       - name: Create build user
         run: |
