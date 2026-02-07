@@ -44,12 +44,18 @@ jobs:
           sudo -u builder sh <<'EOF'
           set -e
           cd aur
+
           #cd libplasma-aerothemeplasma
           #makepkg -s --skipinteg --skipchecksums --skippgpcheck
           #cd ..
+
           cd plasma6-aerothemeplasma-smod-git
           makepkg -s --skipinteg --skipchecksums --skippgpcheck
-          cd ..
+          EOF
+          cd aur/plasma6-aerothemeplasma-smod-git
+          pacman -U *.pkg.tar.zst --noconfirm
+          sudo -u builder sh <<'EOF'
+          cd aur
           cd plasma6-aerothemeplasma-git
           makepkg -s --skipinteg --skipchecksums --skippgpcheck
           EOF
